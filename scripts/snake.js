@@ -1,8 +1,8 @@
 $(document).ready(function(){
     var canvas = $("#canvas")[0];
     var stage = canvas.getContext("2d");
-    var w = $("#canvas").width;
-    var h = $("#canvas").height;
+    var w = $("#canvas").width();
+    var h = $("#canvas").height();
 
     var taille_case = 20;
     var direction;
@@ -28,7 +28,7 @@ $(document).ready(function(){
         snake_array = [];
         for(var i=length-1; i>=0; i--)
         {
-            snake_array.push({x:i,y:0});
+            snake_array.push({x: i,y: 0});
         }
     }
 
@@ -44,9 +44,9 @@ $(document).ready(function(){
     {
         //Style du canvas
         stage.fillStyle = "white";
-        stage.fillRect(0,0,w,h);
+        stage.fillRect(0, 0, w, h);
         stage.strokeStyle = "black";
-        stage.strokeRect(0,0,w,h);
+        stage.strokeRect(0, 0, w, h);
 
         //Position de la tête
         var nx = snake_array[0].x;
@@ -98,7 +98,7 @@ $(document).ready(function(){
         }
 
         // On affiche la pomme
-        paint_cell(food.x, food.y);
+        paint_food(food.x, food.y);
     }
 
     function paint_cell(x,y)
@@ -106,6 +106,14 @@ $(document).ready(function(){
         stage.fillStyle = "green";
         stage.fillRect(x*taille_case, y*taille_case, taille_case, taille_case);
         stage.strokeStyle = "black";
+        stage.strokeRect(x*taille_case, y*taille_case, taille_case, taille_case);
+    }
+
+    function paint_food(x,y)
+    {
+        stage.fillStyle = "red";
+        stage.fillRect(x*taille_case, y*taille_case, taille_case, taille_case);
+        stage.strokeStyle = "darkred";
         stage.strokeRect(x*taille_case, y*taille_case, taille_case, taille_case);
     }
 
