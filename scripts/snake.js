@@ -1,3 +1,4 @@
+var pause;
 $(document).ready(function(){
     var canvas = $("#canvas")[0];
     var stage = canvas.getContext("2d");
@@ -6,19 +7,22 @@ $(document).ready(function(){
 
     var taille_case = 20;
     var direction;
-    var food;
+    var apple;
     var score;
     var snake_array;
+    
 
     function init()
     {
+        pause = false;
         direction = "right";
         create_snake();
-        create_food();
+        create_apple();
         score = 0;
-
-        if(typeof game_loop != "undefined") clearInterval(game_loop);
-        game_loop = setInterval(paint, 100);
+        if(typeof(game_loop) != "undefined"){
+            clearInterval(game_loop);
+        }
+        game_loop = setInterval(afficher, 100);
     }
     init();
 
@@ -32,76 +36,79 @@ $(document).ready(function(){
         }
     }
 
-    function create_food()
+    function create_apple()
     {
-        food = {
+        // Place aléatoirement une pomme dans le canvas
+        apple = {
             x: Math.round(Math.random()*(w-taille_case)/taille_case),
             y: Math.round(Math.random()*(h-taille_case)/taille_case),
         };
     }
 
-    function paint()
+    function afficher()
     {
-        //Style du canvas
-        stage.fillStyle = "white";
-        stage.fillRect(0, 0, w, h);
-        stage.strokeStyle = "black";
-        stage.strokeRect(0, 0, w, h);
+        if(pause == false){
+            //Style du canvas
+            stage.fillStyle = "white";
+            stage.fillRect(0, 0, w, h);
+            stage.strokeStyle = "black";
+            stage.strokeRect(0, 0, w, h);
 
-        //Position de la tête
-        var nx = snake_array[0].x;
-        var ny = snake_array[0].y;
+            //Position de la tête
+            var teteX = snake_array[0].x;
+            var teteY = snake_array[0].y;
 
-        //Gestion des directions
-        if(direction == "right"){
-            nx++;
-        }
-        else if(direction == "left"){
-            nx--;
-        }
-        else if(direction == "down"){
-            ny++;
-        }
-        else if(direction == "up"){
-            ny--;
-        }
+            //Gestion des directions
+            if(direction == "right"){
+                teteX++;
+            }
+            else if(direction == "left"){
+                teteX--;
+            }
+            else if(direction == "down"){
+                teteY++;
+            }
+            else if(direction == "up"){
+                teteY--;
+            }
 
-        // En cas de collision
-        if(nx == -1 || nx == w/taille_case || ny == -1 || ny == h/taille_case || check_collision(nx, ny, snake_array))
-        {
-            init();
-            return;
-        }
+            // En cas de collision
+            if(teteX == -1 || teteX == w/taille_case || teteY == -1 || teteY == h/taille_case || check_collision(teteX, teteY, snake_array))
+            {
+                init();
+                return;
+            }
 
-        //Si le serpent touche la pomme
-        if(nx == food.x && ny == food.y)
-        {
-            var tail = {x: nx, y: ny};
-            score += 10;
-            $("#score").text(score);
-            create_food();
-        }
-        else
-        {
-            var tail = snake_array.pop();
-            tail.x = nx;
-            tail.y = ny;
-        }
+            //Si le serpent touche la pomme
+            if(teteX == apple.x && teteY == apple.y)
+            {
+                var queue = {x: teteX, y: teteY};
+                score += 10;
+                $("#score").text(score);
+                create_apple();
+            }
+            else
+            {
+                var queue = snake_array.pop();
+                queue.x = teteX;
+                queue.y = teteY;
+            }
 
-        snake_array.unshift(tail);
+            snake_array.unshift(queue);
 
-        // On affiche le serpent
-        for(var i=0; i < snake_array.length; i++)
-        {
-            var cell = snake_array[i];
-            paint_cell(cell.x, cell.y);
+            // On affiche le serpent
+            for(var i=0; i < snake_array.length; i++)
+            {
+                var cell = snake_array[i];
+                display_cell(cell.x, cell.y);
+            }
+
+            // On affiche la pomme
+            display_apple(apple.x, apple.y);
         }
-
-        // On affiche la pomme
-        paint_food(food.x, food.y);
     }
 
-    function paint_cell(x,y)
+    function display_cell(x,y)
     {
         stage.fillStyle = "green";
         stage.fillRect(x*taille_case, y*taille_case, taille_case, taille_case);
@@ -109,7 +116,7 @@ $(document).ready(function(){
         stage.strokeRect(x*taille_case, y*taille_case, taille_case, taille_case);
     }
 
-    function paint_food(x,y)
+    function display_apple(x,y)
     {
         stage.fillStyle = "red";
         stage.fillRect(x*taille_case, y*taille_case, taille_case, taille_case);
@@ -140,7 +147,17 @@ $(document).ready(function(){
         }
         else if(key == "40" && direction != "up"){
             direction = "down";
-        } 
+        }
+        else if(key == "80" && pause == false){  
+            pause = true;
+        }
+        else if(key == "80" && pause == true){
+            pause = false;
+        }
+        else if(key == "32"){
+            init();
+            return;
+        }
     });
 });
 
