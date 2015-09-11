@@ -10,24 +10,51 @@ $(document).ready(function(){
     var apple;
     var score;
     var snake_array;
+
+    $(".choix").click(function(){
+        $("#canvas").css("display", "block");
+        $("#choix-diff").css("display", "none");
+        $("#btn-choix").css("display", "inline");
+        difficulty = $(this).attr('id');
+        init();
+    });
+
+    $("#btn-choix").click(function(){
+        $(this).css("display", "none");
+        $("#canvas").css("display", "none");
+        $("#choix-diff").css("display", "block");
+        score = 0;
+        $("#score").text(score);
+    });
     
 
     function init()
     {
+        // Initialisation du jeu
         pause = false;
         direction = "right";
         create_snake();
         create_apple();
         score = 0;
+        $("#score").text(score);
         if(typeof(game_loop) != "undefined"){
             clearInterval(game_loop);
         }
-        game_loop = setInterval(afficher, 100);
+        // Boucle de jeu
+        if(difficulty == "facile"){ 
+            game_loop = setInterval(afficher, 150);
+        }
+        else if(difficulty == "moyen"){
+            game_loop = setInterval(afficher, 100);
+        }
+        else if(difficulty == "difficile"){
+            game_loop = setInterval(afficher, 50);
+        }
     }
-    init();
 
     function create_snake()
     {
+        // Créer le serpent
         var length = 5;
         snake_array = [];
         for(var i=length-1; i>=0; i--)
@@ -51,7 +78,7 @@ $(document).ready(function(){
             //Style du canvas
             stage.fillStyle = "white";
             stage.fillRect(0, 0, w, h);
-            stage.strokeStyle = "black";
+            stage.strokeStyle = "red";
             stage.strokeRect(0, 0, w, h);
 
             //Position de la tête
@@ -99,6 +126,7 @@ $(document).ready(function(){
             // On affiche le serpent
             for(var i=0; i < snake_array.length; i++)
             {
+                randColor = ('00000'+(Math.random()*(1<<24)|0).toString(16)).slice(-6);
                 var cell = snake_array[i];
                 display_cell(cell.x, cell.y);
             }
@@ -110,7 +138,8 @@ $(document).ready(function(){
 
     function display_cell(x,y)
     {
-        stage.fillStyle = "green";
+        //Défini le style du corps
+        stage.fillStyle = "#"+randColor;
         stage.fillRect(x*taille_case, y*taille_case, taille_case, taille_case);
         stage.strokeStyle = "black";
         stage.strokeRect(x*taille_case, y*taille_case, taille_case, taille_case);
@@ -118,14 +147,18 @@ $(document).ready(function(){
 
     function display_apple(x,y)
     {
+        // Défini le style de la pomme
+        stage.beginPath();
+        stage.arc(x*taille_case+10, y*taille_case+10, 10, 0, 2 * Math.PI, false);
         stage.fillStyle = "red";
-        stage.fillRect(x*taille_case, y*taille_case, taille_case, taille_case);
+        stage.fill();
         stage.strokeStyle = "darkred";
-        stage.strokeRect(x*taille_case, y*taille_case, taille_case, taille_case);
+        stage.stroke();
     }
 
     function check_collision(x, y, array)
     {
+        // Vérification d'une collision avec le corps
         for(var i = 0; i < array.length; i++)
         {
             if(array[i].x == x && array[i].y == y)
@@ -134,6 +167,7 @@ $(document).ready(function(){
         return false;
     }
 
+    // Gestion des touches du clavier
     $(document).keydown(function(e){
         var key = e.which;
         if(key == "39" && direction != "left"){
@@ -160,118 +194,3 @@ $(document).ready(function(){
         }
     });
 });
-
-
-
-// function moveRight(){
-// //snakeHead will move 20 units to the right.
-//     snakeHead.x += 20;
-//     //Will cause the circle to wrap back
-//     if(snakeHead.x > stage.canvas.width){
-//         snakeHead.x = 0;
-//     }
-//     stage.update();
-// }
-
-// function moveLeft(){
-// //snakeHead will move 20 units to the left.
-//     snakeHead.x -= 20;
-//     if(snakeHead.x < 0){
-//         snakeHead.x = stage.canvas.width; 
-//     }
-//     stage.update();
-// }
-
-// function moveDown(){
-// //snakeHead will move 20 units to the bottom.
-//     snakeHead.y += 20;
-//     if(snakeHead.y > stage.canvas.height){
-//         snakeHead.y = 0; 
-//     }
-//     stage.update();
-// }
-
-// function moveUp(){
-// //snakeHead will move 20 units to the top.
-//     snakeHead.y -= 20;
-//     if(snakeHead.y < 0){
-//         snakeHead.y = stage.canvas.height; 
-//     }
-//     stage.update();
-// }
-
-// function handleKeyDown(e){
-//     //cross browser issues exist
-//     if (!e) {
-//         var e = window.event;
-//     }
-//     var keycode = 
-//     switch (e.keyCode) {
-//         case KEYCODE_LEFT:
-//             if(moveQueue[0] !== 1 || snakeLength === 1){
-//                 moveQueue.unshift(3); // Direction : Gauche
-//             }
-//             break;
-//         case KEYCODE_RIGHT:
-//             if(moveQueue[0] !== 3 || snakeLength === 1){
-//                 moveQueue.unshift(1); // Direction : Droite
-//             }
-//             break;
-//         case KEYCODE_UP:
-//             if(moveQueue[0] !== 2 || snakeLength === 1){
-//                 moveQueue.unshift(0); // Direction : Haut
-//             }
-//             break;
-//         case KEYCODE_DOWN:
-//             if(moveQueue[0] !== 0 || snakeLength === 1){
-//                 moveQueue.unshift(2); // Direction : Bas
-//             }
-//             break;
-//     }
-// }
-
-// function autoMove()
-// {
-//     var move = [moveUp,moveRight,moveDown,moveLeft];
-//     if(moveQueue.length > 0){
-//         var autoDirection = moveQueue[0];
-//         move[autoDirection]();
-//     }
-//     snakePosition = [snakeHead.x, snakeHead.y];
-//     if(snakePosition[0] == applePosition[0] && snakePosition[1] == applePosition[1])
-//     {
-//         stage.removeChild(apple);
-//         score += 10;
-//         $("#score").text(score);
-//         placePomme();
-//         plusGrandSnake();
-//     }   
-// }
-// setInterval(autoMove, 150);
-
-// function plusGrandSnake()
-// {
-//     snake = new createjs.Shape();
-//     snake.graphics.beginFill("green").drawRect(0, 0, 20, 20);
-//     snake.x = snakePosition[0];
-//     snake.y = snakePosition[1];
-//     stage.addChild(snake);
-//     stage.update();
-//     snakeLength++;
-// }
-
-// function placePomme()
-// {
-//     var abs = Math.floor(Math.random()*(stage.canvas.width/20))*20;
-//     var ord = Math.floor(Math.random()*(stage.canvas.height/20))*20;
-//     apple = new createjs.Shape();
-//     apple.graphics.beginFill("red").drawRect(0, 0, 20, 20);
-//     apple.x = abs;
-//     apple.y = ord;
-//     applePosition = [apple.x, apple.y];
-//     stage.addChild(apple);
-//     stage.update();
-//     console.log(applePosition);
-// }
-
-// document.onload = placePomme();

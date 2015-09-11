@@ -7,9 +7,19 @@
 	<title>Snake</title>
 </head>
 <body>
-	<canvas id="canvas" width="500" height="500"></canvas>
-	<p>Score : <span id="score">0<span></p>
-	<p><span class="touche">Espace</span> : Recommencer <span class="touche">P</span> : Pause</p>
+	<div class="container">
+		<h1>Disco-Snake</h1>
+		<div id="choix-diff">
+			<h2>Choisir la difficulté</h2>
+			<button type="button" class="choix" id="facile">Facile</button>
+			<button type="button" class="choix" id="moyen">Moyen</button>
+			<button type="button" class="choix" id="difficile">Difficile</button>
+		</div>
+		<canvas id="canvas" width="500" height="500"></canvas>
+		<p>SCORE : <span id="score">0<span></p>
+		<p><span class="touche">Espace</span> : RECOMMENCER <span class="touche">P</span> : PAUSE</p>
+		<button id="btn-choix">Revenir au choix de la difficulté</button>
+	</div>
 	<script type="text/javascript" src="scripts/snake.js"></script>
 </body>
 </html>
