@@ -2,7 +2,7 @@
 
 body
 {
-	background: url("../img/peau_serpent.jpg");
+	background: #222;
 }
 
 .container
@@ -24,6 +24,12 @@ h2
 {
 	color: #fff;
 	border-bottom: 1px solid #ddd;
+}
+
+h4
+{
+	color: #EE3232;
+	text-transform: uppercase;
 }
 
 canvas
@@ -81,4 +87,15 @@ p
 	color: #C82F2F;
 	font-weight: bold;
 	text-shadow: 2px 2px 2px black;
+}
+
+li
+{
+	color: #fff;
+	list-style-type: none;
+}
+
+ul
+{
+	padding-left: 0;
 }

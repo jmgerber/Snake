@@ -10,6 +10,7 @@ $(document).ready(function(){
     var apple;
     var score;
     var snake_array;
+    var tab_score = [];
 
     $(".choix").click(function(){
         $("#canvas").css("display", "block");
@@ -102,6 +103,17 @@ $(document).ready(function(){
             // En cas de collision
             if(teteX == -1 || teteX == w/taille_case || teteY == -1 || teteY == h/taille_case || check_collision(teteX, teteY, snake_array))
             {
+                if(score>0){
+                    tab_score.unshift(score);
+                    if(tab_score.length>5){
+                        tab_score.pop();
+                    }
+                    for(var j=0; j<=5; j++){
+                        $("#score"+j).text(tab_score[j]);
+                        console.log("#score"+j);
+                        console.log(tab_score[j]);
+                    }
+                }
                 init();
                 return;
             }
