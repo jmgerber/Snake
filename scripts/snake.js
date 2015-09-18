@@ -10,7 +10,7 @@ $(document).ready(function(){
     var apple;
     var score;
     var snake_array;
-    var tab_score = [];
+    var bestScore = 0;
 
     $(".choix").click(function(){
         $("#canvas").css("display", "block");
@@ -66,11 +66,19 @@ $(document).ready(function(){
 
     function create_apple()
     {
+        var u = 0;
         // Place aléatoirement une pomme dans le canvas
         apple = {
             x: Math.round(Math.random()*(w-taille_case)/taille_case),
             y: Math.round(Math.random()*(h-taille_case)/taille_case),
         };
+        // Si la pomme apparaît sur le serpent, on rappelle la fonction
+        while(u<snake_array.length){
+            if(snake_array[u].x == apple.x && snake_array[u].y == apple.y){
+                create_apple(); 
+            }
+            u++;
+        }
     }
 
     function afficher()
@@ -104,15 +112,9 @@ $(document).ready(function(){
             if(teteX == -1 || teteX == w/taille_case || teteY == -1 || teteY == h/taille_case || check_collision(teteX, teteY, snake_array))
             {
                 if(score>0){
-                    tab_score.unshift(score);
-                    if(tab_score.length>5){
-                        tab_score.pop();
-                    }
-                    for(var j=0; j<=5; j++){
-                        $("#score"+j).text(tab_score[j]);
-                        console.log("#score"+j);
-                        console.log(tab_score[j]);
-                    }
+                    if(score > bestScore)
+                    bestScore = score;
+                $("#best-score").text(bestScore);
                 }
                 init();
                 return;
